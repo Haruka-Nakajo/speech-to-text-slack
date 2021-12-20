@@ -1,6 +1,5 @@
 <template>
   <div class="hello">
-    toggle recording on/off.
     <form class="uk-form-horizontal uk-margin-large uk-section-xsmall">
       <fieldset data-uk-margin>
         <legend>Talk With</legend>
@@ -195,11 +194,6 @@ export default {
       // window.URL = window.URL || window.webkitURL;
 
       this.audio_context = new AudioContext();
-      this.__log("Audio context set up.");
-      this.__log(
-        "navigator.mediaDevices " +
-          (navigator.mediaDevices.length != 0 ? "available." : "not present!")
-      );
     } catch (e) {
       alert("No web audio support in this browser!");
     }
@@ -210,7 +204,7 @@ export default {
         this.startUserMedia(stream);
       })
       .catch((e) => {
-        this.__log("No live audio input: " + e);
+        console.log(e);
       });
 
     window.$("#record").on("click", () => {
@@ -234,17 +228,11 @@ export default {
     startUserMedia(stream) {
       var input = this.audio_context.createMediaStreamSource(stream);
       this.audio_context.resume();
-      this.__log("Media stream created.");
 
       // Uncomment if you want the audio to feedback directly
       //input.connect(audio_context.destination);
-      //this.__log('Input connected to audio context destination.');
 
       this.recorder = new Recorder(input);
-      this.__log("Recorder initialised.");
-    },
-    __log(e, data) {
-      window.$("log").innerHTML += "\n" + e + " " + (data || "");
     },
     /**
      * 録音+文字起こしの待ち受け状態切替
@@ -391,7 +379,6 @@ export default {
       this.recorder && this.recorder.record();
       // button.disabled = true;
       // button.nextElementSibling.disabled = false;
-      this.__log("Recording...");
     },
 
     /**
@@ -401,7 +388,6 @@ export default {
       this.recorder && this.recorder.stop();
       // button.disabled = true;
       // button.previousElementSibling.disabled = false;
-      this.__log("Stopped recording.");
 
       // create WAV download link using audio data blob
       this.createDownloadLink();
